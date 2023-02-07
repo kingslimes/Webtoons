@@ -43,9 +43,14 @@
 <form class="login-action d-none" action="/auth/login" method="post"></form>
 <script>
 
+<% if ( locals.messages.error ) { %>
+Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: '<%= locals.messages.error.join(", ") %> <%= locals.messages.errorType %>!'
+});
+<% } else if ( locals.messages.login ) { %>
 const loginForm = document.querySelector(".login-action");
-const showInfo = document.querySelector(".show-info");
-
 const setFormLogin = ( name, value ) => {
     const input = document.createElement("input");
     input.type = "text";
@@ -54,26 +59,18 @@ const setFormLogin = ( name, value ) => {
     loginForm.appendChild( input );
     return input;
 };
-
-<% if ( locals.messages.error ) { %>
-Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text: '<%= locals.messages.error.join(", ") %> <%= locals.messages.errorType %>!'
-});
-<% } else if ( locals.messages.login ) { %>
 setFormLogin("username", "<%= locals.messages.login[0] %>");
 setFormLogin("password", "<%= locals.messages.login[1] %>");
 Swal.fire({
     icon: 'success',
     title: 'Success...',
     text: 'Registered successful!'
-}).then( result => {
+}).then( e => {
     loginForm.submit();
 });
 <% } %>
 
-showInfo.addEventListener("click", function(e) {
+document.querySelector(".show-info").addEventListener("click", function(e) {
     Swal.fire({
         icon: "info",
         title: "Register regex",

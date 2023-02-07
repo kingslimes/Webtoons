@@ -1,0 +1,12 @@
+@media only screen and ( min-height:760px ) {
+    html, #body { height:100% !important }
+}
+#body {
+    display: flex !important;
+    align-items: center !important;
+}
+.w-35 { max-width:350px }
+.swal2-html-container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}

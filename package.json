@@ -9,6 +9,10 @@
   "keywords": [
     "manga"
   ],
+  "repository": {
+    "url": "https://github.com/kingslimes/Webtoons.git",
+    "directory": "kingslimes/Webtoons"
+  },
   "author": "Phiraphan",
   "license": "MIT",
   "dependencies": {

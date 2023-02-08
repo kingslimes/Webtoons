@@ -8,20 +8,52 @@ sqli.setModel("members", {
     mail: Firebase.MimeType.String,
     hash: Firebase.MimeType.String,
     username: Firebase.MimeType.String,
-    password: Firebase.MimeType.String
+    password: Firebase.MimeType.String,
+    create: Firebase.MimeType.DateTime
 })
 
+client.get("/admin/:username", ( request, response ) => {
+    response.json( request.session );
+})
 
 client.get("/auth/login", ( request, response ) => {
+    if ( request.session.username ) return response.redirect( request.session.admin );
     response.render("login");
 })
 
-client.post("/auth/login", ( request, response) => {
-    console.log( request.body )
+client.post("/auth/login", async ( request, response) => {
+    const
+        username = request.body.username,
+        password = request.body.password;
+
+    if ( !username || !password ) return response.render("register");
+    let loinSuccess = false;
+    const members = await sqli.query("members");
+    const user = members.find( i => i.username == username );
+    if ( user ) {
+        if ( user.hash == md5( password ) ) {
+            loinSuccess = true
+            request.session.userID = user.id;
+            request.session.username = user.username;
+            request.session.admin = `/admin/${user.username}`;
+            request.session.timestamp = new Date().getTime();
+            await request.flash("start", request.session.admin);
+        } else {
+            await request.flash("error", true);
+        }
+    } else {
+        await request.flash("error", true);
+    }
+    if ( !loinSuccess ) {
+        await request.flash("username", username);
+        await request.flash("password", password);
+    }
     response.render("login");
+    return !0
 })
 
 client.get("/auth/register", ( request, response ) => {
+    if ( request.session.username ) return response.redirect( request.session.admin );
     response.render("register");
 })
 
@@ -31,7 +63,7 @@ client.post("/auth/register", async ( request, response ) => {
         username = request.body.username,
         password = request.body.password,
         password_repeat = request.body.password_repeat;
-    
+
     if ( !mail || !username || !password ) return response.render("register");
     const errorReport = new Array();
     if ( !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(mail) ) errorReport.push("Email");

@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/favicon.jpeg" type="image/jpeg">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
@@ -19,7 +20,7 @@
     <div class="row justify-content-center pb-3">
         <form class="register-form w-35" action="/auth/register" method="post">
             <div class="py-2">
-                <input onkeyup="checkRegex(this);" required class="form-control form-control-lg" type="text" name="mail" placeholder="Email" value="<%= locals.messages?.mail %>">
+                <input onkeyup="checkRegex(this);" required class="form-control form-control-lg" type="email" name="mail" placeholder="Email" value="<%= locals.messages?.mail %>">
             </div>
             <div class="pb-2">
                 <input onkeyup="checkRegex(this);" required class="form-control form-control-lg" type="text" name="username" placeholder="Username" value="<%= locals.messages?.username %>">
@@ -66,14 +67,6 @@ Swal.fire({
     loginForm.submit();
 });
 <% } %>
-
-document.querySelector(".show-info").addEventListener("click", function(e) {
-    Swal.fire({
-        icon: "info",
-        title: "Register regex",
-        html: "<div>Should be more than 8 characters</div><div> - [Username] string length >= 4</div><div> - [Password] string length >= 2</div>"
-    })
-})
 
 const alertContainer = document.createElement("div");
 alertContainer.className = "alert py-1 position-fixed";

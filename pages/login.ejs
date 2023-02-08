@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/favicon.jpeg" type="image/jpeg">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
@@ -19,10 +20,10 @@
     <div class="row justify-content-center pb-3">
         <form class="w-35" action="/auth/login" method="post">
             <div class="my-2">
-                <input class="form-control form-control-lg" type="text" name="username" placeholder="Username">
+                <input class="form-control form-control-lg" type="text" name="username" placeholder="Username" value="<%= locals.messages?.username %>">
             </div>
             <div class="mb-3">
-                <input class="form-control form-control-lg" type="password" name="password" placeholder="Password">
+                <input class="form-control form-control-lg" type="password" name="password" placeholder="Password" value="<%= locals.messages?.password %>">
             </div>
             <div class="d-flex justify-content-between align-items-center pb-3">
                 <div class="col"></div>

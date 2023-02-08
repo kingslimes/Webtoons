@@ -44,5 +44,14 @@ Swal.fire({
 });
 </script>
 <% } %>
+<% if ( locals.messages.error ) { %>
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Success...',
+    text: 'Login successful!'
+});
+</script>
+<% } %>
 </body>
 </html>

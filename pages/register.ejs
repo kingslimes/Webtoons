@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="/favicon.jpeg" type="image/jpeg">
@@ -94,11 +94,13 @@ Swal.alert = function( state, text ) {
 function checkRegex( input, event ) {
     const type = input.getAttribute('type');
     const value = input.value;
+    if ( value.includes(" ") ) input.value = value.replace(" ", "_");
     const regex = {
         text: /[a-zA-Z]{4,6}/,
         password: /[a-zA-Z]{2,4}/,
         email: /([a-z0-9]{4,6})+@[a-z]+\.[a-z]{2,3}/
     }
+    if ( value.length == 0 ) return !0;
     if ( type == "email" ) {
         regex.email.test( value ) ? Swal.alert("success", "Email is correct.") : ( value.length < 10 ? Swal.alert("danger", "[ Email ] 10 characters minimum.") : Swal.alert("danger", "Invalid email.") );
     }

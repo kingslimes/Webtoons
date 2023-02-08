@@ -10,10 +10,34 @@ sqli.setModel("members", {
     username: Firebase.MimeType.String,
     password: Firebase.MimeType.String,
     create: Firebase.MimeType.DateTime
+});
+sqli.setModel("manga", {
+    id: Firebase.MimeType.Primary,
+    member_id: Firebase.MimeType.String,
+    title: Firebase.MimeType.String,
+    thumbnail: Firebase.MimeType.String,
+    description: Firebase.MimeType.String,
+    update: Firebase.MimeType.String,
+    create: Firebase.MimeType.Timestamp
+});
+sqli.setModel("episode", {
+    id: Firebase.MimeType.Primary,
+    manga_id: Firebase.MimeType.String,
+    images: Firebase.MimeType.Varchar,
+    chapter: Firebase.MimeType.String,
+    title: Firebase.MimeType.String,
+    create: Firebase.MimeType.Timestamp
 })
 
-client.get("/admin/:username", ( request, response ) => {
+client.get("/admin/:username", async ( request, response ) => {
+    const members = await sqli.query("members");
+    if ( !members.find( i => i.username == request.params.username ) ) return response.render("404");
     response.json( request.session );
+})
+
+client.all("/auth/logout", ( request, response ) => {
+    request.session.destroy();
+    response.redirect("/auth/login");
 })
 
 client.get("/auth/login", ( request, response ) => {
@@ -100,6 +124,10 @@ client.post("/auth/register", async ( request, response ) => {
     }
     response.render("register");
     return !0
+})
+
+client.all("*", ( request, response ) => {
+    response.render("404");
 })
 
 client.listen( 5555 )

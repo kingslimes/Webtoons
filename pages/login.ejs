@@ -44,12 +44,14 @@ Swal.fire({
 });
 </script>
 <% } %>
-<% if ( locals.messages.error ) { %>
+<% if ( locals.messages.start ) { %>
 <script>
 Swal.fire({
     icon: 'success',
     title: 'Success...',
     text: 'Login successful!'
+}).then( e => {
+    window.location.href = "<%= locals.messages.start %>";
 });
 </script>
 <% } %>

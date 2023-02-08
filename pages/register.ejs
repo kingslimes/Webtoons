@@ -19,16 +19,16 @@
     <div class="row justify-content-center pb-3">
         <form class="register-form w-35" action="/auth/register" method="post">
             <div class="py-2">
-                <input required class="form-control form-control-lg" type="text" name="mail" placeholder="Email" value="<%= locals.messages?.mail %>">
+                <input onkeyup="checkRegex(this);" required class="form-control form-control-lg" type="text" name="mail" placeholder="Email" value="<%= locals.messages?.mail %>">
             </div>
             <div class="pb-2">
-                <input required class="form-control form-control-lg" type="text" name="username" placeholder="Username" value="<%= locals.messages?.username %>">
+                <input onkeyup="checkRegex(this);" required class="form-control form-control-lg" type="text" name="username" placeholder="Username" value="<%= locals.messages?.username %>">
             </div>
             <div class="pb-2">
-                <input required class="form-control form-control-lg" type="password" name="password" placeholder="Password" value="<%= locals.messages?.password %>">
+                <input onkeyup="checkRegex(this);" required class="form-control form-control-lg" type="password" name="password" placeholder="Password" value="<%= locals.messages?.password %>">
             </div>
             <div class="pb-3">
-                <input required class="form-control form-control-lg" type="password" name="password_repeat" placeholder="Repeat your password" value="<%= locals.messages?.password_repeat %>">
+                <input onkeyup="checkRegex(this, true);" required class="form-control form-control-lg" type="password" name="password_repeat" placeholder="Repeat your password" value="<%= locals.messages?.password_repeat %>">
             </div>
             <button class="btn btn-primary btn-lg w-100" type="submit">Sign up</button>
             <div class="pt-3">

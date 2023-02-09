@@ -67,9 +67,9 @@ Swal.fire({
     loginForm.submit();
 });
 <% } %>
-
+const form = document.querySelector(".register-form");
 const alertContainer = document.createElement("div");
-alertContainer.className = "alert py-1 position-fixed";
+alertContainer.className = "alert py-1 position-fixed user-select-none";
 document.body.appendChild( alertContainer );
 Swal.alert = function( state, text ) {
     clearTimeout( alertContainer.state );
@@ -88,13 +88,16 @@ Swal.alert = function( state, text ) {
     alertContainer.classList.add("show");
     alertContainer.state = setTimeout( e => {
         alertContainer.classList.remove("show")
-    }, 3000);
+    }, 2200);
 }
 
 function checkRegex( input, event ) {
     const type = input.getAttribute('type');
     const value = input.value;
     if ( value.includes(" ") ) input.value = value.replace(" ", "_");
+    const touched = "ontouchstart" in document.documentElement;
+    alertContainer.style.top = touched ? `${input.offsetTop - 40}px` : "1rem";
+    alertContainer.style.left = touched ? `${input.offsetLeft}px` : "1rem";
     const regex = {
         text: /[a-zA-Z]{4,6}/,
         password: /[a-zA-Z]{2,4}/,

@@ -29,10 +29,20 @@ sqli.setModel("episode", {
     create: Firebase.MimeType.Timestamp
 })
 
-client.get("/admin/:username", async ( request, response ) => {
+client.get("/:username/new", async ( request, response ) => {
+    if ( request.session.username != request.params.username ) return response.render("404");
+    response.render("new_manga");
+})
+
+client.get("/:username", async ( request, response ) => {
     const members = await sqli.query("members");
     if ( !members.find( i => i.username == request.params.username ) ) return response.render("404");
-    response.json( request.session );
+    const result = await sqli.query("manga");
+    response.render("user_content", {
+        user: request.session.username,
+        admin: request.params.username == request.session.username,
+        manga: members
+    });
 })
 
 client.all("/auth/logout", ( request, response ) => {
@@ -59,7 +69,7 @@ client.post("/auth/login", async ( request, response) => {
             loinSuccess = true
             request.session.userID = user.id;
             request.session.username = user.username;
-            request.session.admin = `/admin/${user.username}`;
+            request.session.admin = `/${user.username}`;
             request.session.timestamp = new Date().getTime();
             await request.flash("start", request.session.admin);
         } else {

@@ -11,8 +11,6 @@
     margin-right: 1rem;
 }
 .alert {
-    top: 1rem;
-    left: 1rem;
     opacity: 0;
     max-width: 340px;
     display: none;

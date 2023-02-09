@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/favicon.jpeg" type="image/jpeg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali&amp;display=swap">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+    
+
+    <div class="container">
+        <div class="col-12"></div>
+        <div class="row">
+            <div class="col-12 h5 mt-5 pb-3">มังงะทั้งหมด</div>
+            
+        <% if ( manga.length > 0 ) { %>
+            <% for ( let i=0; i<manga.length; i++ ) { %>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 px-4 px-sm-3 px-md-2 position-relative">
+                    <a class="card text-white text-decoration-none overflow-hidden position-relative" href="./<%= user %>/manga/<%= i+1 %>">
+                        <div class="movie-item">
+                            <div class="movie-label z-2 ms-2 mt-2 position-absolute">
+                                <span class="movie-label-item bg-black px-1">1-6</span>
+                            </div>
+                            <img class="d-block card-img z-1" data-src="https://static.anislime.com/pexels/image/44TtU.webp" width="190" height="280" alt="Ooyukiumi no Kaina" data-ll-status="loaded" src="https://static.anislime.com/pexels/image/44TtU.webp">
+                            <div class="movie-content z-2 text-center position-absolute bottom-0 pt-4 w-100 px-2 pb-2">Ooyukiumi no Kaina</div>
+                        </div>
+                    </a>
+                    <% if ( admin ) { %><a class="btn btn-primary text-white top-0 end-0 me-3 mt-2 position-absolute ">edit</a><% } %>
+                </div>
+            <% } %>
+        <% } else { %>
+            <h4 class="col-12 text-center">No result.</h4>
+        <% } %>
+            
+        </div>
+    </div>
+
+<style>
+body {
+    font-family: 'Mali', sans-serif;
+}
+.movie-content {
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,.5), #000);
+}
+.card img {
+    transition: transform 250ms;
+}
+.card:hover img {
+    transform: scale(1.1);
+}
+.movie-label span {
+    border-radius: 6px;
+}
+</style>
+</body>
+</html>

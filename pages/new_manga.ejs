@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/cropper.min.js"></script>
+    <link rel="stylesheet" href="/css/cropper.min.css">
+    <link rel="stylesheet" href="/css/fontawesome.min.css" crossorigin="anonymous"/>
+    <title>New</title>
+</head>
+<body>
+    <div class="container">
+        <div class="col py-4 d-flex user-select-none" style="align-items:center">
+            <a class="text-decoration-none text-dark" href="./"><i class="fa-solid pe-1 fa-chevron-left"></i>ย้อนกลับ</a>
+        </div>
+        <form class="form" method="post">
+            <input class="image-thumbnail" type="text" name="thumbnail" style="display:none">
+            <div class="col-12 col-md-9 mx-auto">
+                <div class="row pb-5">
+                    <div class="col-sm-3 my-3 px-4 px-sm-0">
+                        <div class="card overflow-hidden hover-event px-0 position-relative img-thumbnail">
+                            <img class="card-img z-2 position-absolute">
+                            <div class="image-popup position-absolute z-1 top-0 w-100 bottom-0 d-flex"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9 my-3">
+                        <div class="mb-2">
+                            <h1 class="movie-title">
+                                <input class="form-control form-control-lg" type="text" name="title" placeholder="Ooyukiumi no Kaina">
+                            </h1>
+                        </div>
+                        <div class="mb-2 text-justify">
+                            <textarea class="form-control p-2 w-100 d-block" name="description" style="height:315px;resize:none" placeholder="เรื่องราวของโลกที่ถูกปกคลุมไปด้วยทะเลหิมะและมันกำลังกลืนกินโลกไปเรื่อย ๆ ทำให้ผู้คนต้องอาศัยอยู่ตามรากต้นไม้ใหญ่ที่กระจายอยู่บนพื้นที่ของโลก และนั่นทำให้ “Kaina” เด็กหนุ่มจากพื้นที่สูงของต้นไม้ได้พบกับ “Liliha” เด็กสาวจากพื้นที่หิมะ หลังจากนั้นก็ทำให้โชคชะตาของโลกเริ่มเปลี่ยนไป / โลกถูกปกคลุมด้วยหิมะ เรื่องราวของ ไคนะ และ ลิลิฮะ ได้มาพบกัน ชื่ออื่น: Kaina of the Great Snow Sea"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12 ps-0">
+                        <input class="form-control" type="text" name="update" placeholder="[ ตอนใหม่ อัพทุกวันพหัสฯ ] - [ มีทั้งหมด 11 ตอนจบ ]">
+                    </div>
+                    <div class="d-flex justify-content-center pt-3 pb-5">
+                        <button type="submit" class="btn btn-primary" style="min-width:250px">บันทึก</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <input class="copped-image d-none" type="file">
+<style>
+
+.img-thumbnail {
+    padding-top: 170%;
+}
+.hover-event {
+    cursor: pointer;
+}
+.card-img {
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+}
+.image-popup::before {
+    background: transparent;
+    content: "Image";
+    margin: auto;
+    color: black;
+    font-size: 1.4rem;
+}
+.hover-event:hover .image-popup {
+    border: 4px dashed black;
+    position: relative;
+    background: white;
+}
+.hover-event:hover .image-popup::before {
+    content: "Upload";
+    font-size: 1.2rem;
+}
+
+</style>
+<script>
+
+const base64 = ( file ) => {
+    return new Promise( result => {
+        const reader = new FileReader();
+        reader.onload = () => result( reader.result );
+        reader.readAsDataURL( file );
+    })
+}
+
+$(".hover-event").on("click", function(event) {
+    $(".copped-image").click();
+})
+$(".copped-image").on("change", async function(event) {
+    const getURL = await base64( this.files[0] );
+    const img = new Image();
+    img.src = getURL;
+    img.onload = function() {
+        const cropper = new Cropper( img, {
+            aspectRatio: 9/16,
+            success: function( url ) {
+                $(".card-img")[0].src = url;
+                $(".image-thumbnail")[0].value = url;
+            }
+        })
+    }
+})
+
+</script>
+</body>
+</html>

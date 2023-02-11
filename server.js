@@ -1,6 +1,11 @@
+const fs = require('fs');
 const md5 = require("md5");
+const path = path = require('path');
 const { Firebase } = require("@slimedb/firebase");
 const { client } = require("./lib/router");
+const { google } = require('googleapis');
+const GOOGLE_API_FOLDER_ID = '1-sQEbClcbj6xmywa5XygM3wWfGCWWF69';
+const short = require('shortid');
 
 const sqli = new Firebase("https://slimedatabase-realtime-default-rtdb.asia-southeast1.firebasedatabase.app");
 sqli.setModel("members", {
@@ -31,17 +36,43 @@ sqli.setModel("episode", {
 
 client.get("/:username/new", async ( request, response ) => {
     if ( request.session.username != request.params.username ) return response.render("404");
-    response.render("new_manga");
+    response.render("new_manga", {
+        user: request.params.username
+    });
+})
+
+client.post("/:username/new", async ( request, response ) => {
+    if ( request.session.username != request.params.username ) return response.render("404");
+    Object.assign(request.body, {
+        member_id: request.session.userID
+    });
+    await sqli.insert("manga", request.body);
+    const manga = await sqli.query("manga");
+    const result = manga.filter( i => i.member_id == request.session.userID ).slice(-1);
+    response.redirect(`./manga/${result[0].id}`);
+})
+
+client.get("/:username/manga", async ( request, response ) => {
+
 })
 
 client.get("/:username", async ( request, response ) => {
     const members = await sqli.query("members");
-    if ( !members.find( i => i.username == request.params.username ) ) return response.render("404");
+    const user = members.find( i => i.username == request.params.username );
+    if ( !user ) return response.render("404");
+
     const result = await sqli.query("manga");
+    const manga = result.filter( i => i.member_id == user.id );
+
+    for ( let ix=0; ix<manga.length; ix++ ) {
+        const episode = await sqli.query("episode");
+        const chapter = episode.filter( i => i.manga_id == manga[ix].id );
+        Object.assign( manga[ix], { episode:chapter } );
+    }
     response.render("user_content", {
-        user: request.session.username,
+        user: request.params.username,
         admin: request.params.username == request.session.username,
-        manga: members
+        manga: manga
     });
 })
 
@@ -134,6 +165,70 @@ client.post("/auth/register", async ( request, response ) => {
     }
     response.render("register");
     return !0
+})
+
+const convertBase64 = ( url ) => {
+    let encoded = url.toString().replace(/^data:(.*,)?/, '');
+    let len = encoded.length % 4;
+    if ( len > 0 ) encoded += '='.repeat(4 - len);
+    return encoded;
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+            let encoded = fileReader.result.toString().replace(/^data:(.*,)?/, '');
+            if ((encoded.length % 4) > 0) {
+                encoded += '='.repeat(4 - (encoded.length % 4));
+            }
+            resolve(encoded);
+        };
+        fileReader.onerror = (error) => {
+            reject(error);
+        };
+    });
+};
+
+client.post('/api/v1/file', async (req,res) => {
+    const pathName = './stream/' + short.generate() + '.stream';
+
+    req.body.img = convertBase64(req.body.image);
+    fs.writeFileSync(pathName, req.body.img, {
+        encoding: 'base64'
+    });
+    
+    try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: './lib/google.json',
+            scopes: ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/cloud-platform']
+        })
+        const driveService = google.drive({
+            version: 'v3',
+            auth
+        })
+        const NAMESPACE = `${ new Date().getTime() }`;
+        const fileMetaData = {
+            'name': NAMESPACE,
+            'parents': [GOOGLE_API_FOLDER_ID]
+        }
+        const media = {
+            mimeType: req.body.mimeType || "image/webp",
+            body: fs.createReadStream(pathName)
+        }
+        const response = await driveService.files.create({
+            resource: fileMetaData,
+            media: media,
+            field: 'id'
+        })
+        res.json({
+            id: response.data.id,
+            name: NAMESPACE
+        })
+    } catch(err) {
+        res.json({
+            message: err
+        })
+    }
+    fs.unlinkSync(pathName);
 })
 
 client.all("*", ( request, response ) => {

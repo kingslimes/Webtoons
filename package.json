@@ -1,6 +1,9 @@
 {
   "name": "mangasite",
   "version": "1.1.0",
+  "engines": {
+    "node": "14.x"
+  },
   "description": "free hosting manga",
   "main": "server.js",
   "scripts": {
